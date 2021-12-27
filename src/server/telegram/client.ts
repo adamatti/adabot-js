@@ -27,7 +27,7 @@ bot.on('webhook_error', (error: any) => {
 });
 
 eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId: ChatId, text: string }) => {
-  logger.debug(`messsage sent: ${chatId} ${text}`);
+  logger.debug(`message sent: ${chatId} ${text}`);
   bot.sendMessage(chatId, text);
   eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
 })
