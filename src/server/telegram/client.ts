@@ -11,6 +11,10 @@ bot.on('message', (message: Message, metadata: Metadata) => {
   eventEmiter.emit(EventNames.TelegramMessageReceived, {message, metadata});
 });
 
+bot.on('error', error => {
+  logger.error("Error:", error.message);
+})
+
 eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId: ChatId, text: string }) => {
   bot.sendMessage(chatId, text);
   eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
