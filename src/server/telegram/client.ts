@@ -16,7 +16,6 @@ eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId:
   eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
 })
 
-// FIXME use a proper logger
 logger.info("telegram bot loaded");
 
 export default bot;
