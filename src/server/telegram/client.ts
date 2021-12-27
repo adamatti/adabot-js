@@ -8,6 +8,9 @@ const logger = parentLogger.child({file: 'telegram'});
 const bot = new TelegramBot(config.telegram.token as string, {polling: true});
 
 bot.on('message', (message: Message, metadata: Metadata) => {
+  const json = JSON.stringify({message, metadata});
+  logger.debug(`message received: ${json}`);
+
   eventEmiter.emit(EventNames.TelegramMessageReceived, {message, metadata});
 });
 
@@ -16,6 +19,7 @@ bot.on('error', error => {
 })
 
 eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId: ChatId, text: string }) => {
+  logger.debug(`messsage sent: ${chatId} ${text}`);
   bot.sendMessage(chatId, text);
   eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
 })
