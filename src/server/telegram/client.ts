@@ -14,9 +14,17 @@ bot.on('message', (message: Message, metadata: Metadata) => {
   eventEmiter.emit(EventNames.TelegramMessageReceived, {message, metadata});
 });
 
-bot.on('error', error => {
+bot.on('error', (error: Error) => {
   logger.error("Error:", error.message);
 })
+
+bot.on('polling_error', (error: any) => {
+  logger.error(`polling_error: ${error.code}`);
+});
+
+bot.on('webhook_error', (error: any) => {
+  logger.error(`webhook_error: ${error.code}`);
+});
 
 eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId: ChatId, text: string }) => {
   logger.debug(`messsage sent: ${chatId} ${text}`);
