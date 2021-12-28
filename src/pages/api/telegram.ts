@@ -5,10 +5,14 @@ import parentLogger from '../../server/logger';
 const logger = parentLogger.child({file: 'telegramWebhook'});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await startup();
+  try {
+    await startup();
 
-  const json = JSON.stringify(req.body);
-  logger.debug(`Msg received: ${json}`);
-  bot.processUpdate(req.body);
+    const json = JSON.stringify(req.body);
+    logger.debug(`Msg received: ${json}`);
+    bot.processUpdate(req.body);
+  } catch (error: any) {
+    logger.error("Error:", error.message);
+  }
   res.status(200).end();
 }
