@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const json = JSON.stringify(req.body);
     logger.debug(`Msg received: ${json}`);
-    bot.processUpdate(req.body);
+    await bot.handleUpdate(req.body);
   } catch (error: any) {
     logger.error("Error:", error.message);
   }

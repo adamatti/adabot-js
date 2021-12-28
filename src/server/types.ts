@@ -1,7 +1,6 @@
-import TelegramBot, {Message, Metadata, ChatId} from 'node-telegram-bot-api';
 
 export type TelegramSendToUser = {
-  chatId: ChatId
+  chatId: string
   text: string
 }
 

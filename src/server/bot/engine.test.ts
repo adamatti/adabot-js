@@ -1,5 +1,4 @@
 import {replyTelegram} from "./engine"; 
-import {Message, Metadata, ChatId} from 'node-telegram-bot-api';
 import { EventNames } from "../types";
 import eventEmitter from "../events";
 
@@ -17,8 +16,7 @@ describe ("Bot engine", () => {
           id: 3,
           type: "group",
         }
-      } as Message,
-      metadata: {} as Metadata,
+      },
     };
 
     // when
