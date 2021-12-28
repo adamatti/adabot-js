@@ -1,13 +1,24 @@
 import eventEmitter from "../events";
-import { EventNames } from "../types";
+import { EventNames, UserMessage, BotMessage } from "../types";
+import rules from "./rules";
 
-export const replyTelegram = (update: any) => {
-  const chatId = update.message.chat.id;
-  const text = `Message received: ${update.message.text}`;
+export const botReply = async (userMessage: UserMessage) => {
+  for(const rule of rules) {
+    if (rule.canHandle(userMessage)) {
+      const botMessage: BotMessage = await rule.handle(userMessage);
+      eventEmitter.emit(EventNames.MessageSendToUser, botMessage);
+      return;
+    }
+  }
 
-  eventEmitter.emit(EventNames.TelegramMessageSendToUser, {chatId, text});
+  // Generic response
+  const botMessage: BotMessage = {
+    text: `Message received: ${userMessage.text}`,
+    userMessage,
+  }
+  eventEmitter.emit(EventNames.MessageSendToUser, botMessage);
 }
 
-eventEmitter.on(EventNames.TelegramMessageReceived, replyTelegram);
+eventEmitter.on(EventNames.MessageReceived, botReply);
 
 export default {} as any;

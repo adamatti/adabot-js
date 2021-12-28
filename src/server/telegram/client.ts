@@ -1,7 +1,7 @@
 import config from '../config';
-import { Telegraf, Context } from 'telegraf';
+import { Telegraf, Context, Types } from 'telegraf';
 import eventEmiter from "../events";
-import {EventNames} from "../types";
+import {EventNames, UserMessage, BotMessage} from "../types";
 import parentLogger from '../logger';
 const logger = parentLogger.child({file: 'telegram'});
 const SIGINT = "SIGINT";
@@ -15,16 +15,29 @@ if (config.web.publicUrl) {
 }
 
 bot.on('message', (ctx: Context) => {
-  const json = JSON.stringify(ctx.update);
+  const update: any = ctx.update;
+  const json = JSON.stringify(update);
   logger.debug(`message received: ${json}`);
 
-  eventEmiter.emit(EventNames.TelegramMessageReceived, ctx.update);
+  const userMessage: UserMessage = {
+    text: update.message.text,
+    channel: "telegram",
+    raw: update
+  };
+
+  eventEmiter.emit(EventNames.MessageReceived, userMessage);
 });
 
-eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId: string, text: string }) => {
+eventEmiter.on(EventNames.MessageSendToUser, (botMessage: BotMessage) => {
+  if (botMessage.userMessage?.channel !== "telegram") {
+    return;
+  }
+  const text = botMessage.text;
+  const chatId = botMessage.userMessage?.raw.message.chat.id;
+
   logger.debug(`message sent: ${chatId} ${text}`);
   bot.telegram.sendMessage(chatId, text);
-  eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
+  eventEmiter.emit(EventNames.MessageSentToUser,botMessage);
 })
 
 logger.info("telegram bot loaded");

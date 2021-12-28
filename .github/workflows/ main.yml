@@ -17,3 +17,5 @@ jobs:
         run: yarn lint
       - name: Test
         run: yarn test
+      - name: Coverage
+        run: yarn coverage
