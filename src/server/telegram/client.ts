@@ -5,7 +5,13 @@ import {EventNames} from "../types";
 import parentLogger from '../logger';
 const logger = parentLogger.child({file: 'telegram'});
 
-const bot = new TelegramBot(config.telegram.token as string, {polling: true});
+const telegramArgs = config.web.publicUrl ? undefined : {polling: true};
+const bot = new TelegramBot(config.telegram.token as string, telegramArgs);
+
+if (config.web.publicUrl) {
+  logger.debug("Using webhook");
+  bot.setWebHook(`${config.web.publicUrl}/api/telegram`);
+}
 
 bot.on('message', (message: Message, metadata: Metadata) => {
   const json = JSON.stringify({message, metadata});
