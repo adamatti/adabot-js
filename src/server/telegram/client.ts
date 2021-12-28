@@ -27,7 +27,6 @@ eventEmiter.on(EventNames.TelegramMessageSendToUser, ({ chatId, text }: {chatId:
   eventEmiter.emit(EventNames.TelegramMessageSentToUser, {chatId, text});
 })
 
-bot.launch();
 logger.info("telegram bot loaded");
 
 // Enable graceful stop
