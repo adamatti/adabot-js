@@ -9,8 +9,9 @@ const telegramArgs = config.web.publicUrl ? undefined : {polling: true};
 const bot = new TelegramBot(config.telegram.token as string, telegramArgs);
 
 if (config.web.publicUrl) {
-  logger.debug("Using webhook");
-  bot.setWebHook(`${config.web.publicUrl}/api/telegram`);
+  const path = `${config.web.publicUrl}/api/telegram`;
+  logger.debug(`Using webhook: ${path}`);
+  bot.setWebHook(path);
 }
 
 bot.on('message', (message: Message, metadata: Metadata) => {
