@@ -11,6 +11,9 @@ clean-app: ## removed generated files but keep dependencies
 clean: clean-app ## clean all
 	rm -rf node-modules/
 
+install:
+	@yarn
+
 run: build ## run app on local box
 	yarn dev
 
@@ -26,3 +29,5 @@ build: ## build app
 check: lint test build
 
 clean-run: clean-app run ## fresh run
+
+full-check: clean install check
