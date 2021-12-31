@@ -40,6 +40,10 @@ eventEmiter.on(EventNames.MessageSendToUser, (botMessage: BotMessage) => {
   eventEmiter.emit(EventNames.MessageSentToUser,botMessage);
 })
 
+if (!config.web.publicUrl) {
+  logger.debug("Using polling");
+  bot.launch();
+}
 logger.info("telegram bot loaded");
 
 // Enable graceful stop
