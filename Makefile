@@ -31,3 +31,19 @@ check: lint test build
 clean-run: clean-app run ## fresh run
 
 full-check: clean install check
+
+deps: ## start docker dependencies
+	@docker-compose up -d
+
+docker-recreate:
+	@docker-compose stop -t 0
+	@rm -rf db
+	@docker-compose up -d
+
+prisma-recreate: 
+	@rm -rf prisma/migrations
+	@npx prisma migrate dev --name init
+	$(MAKE) prisma-generate
+
+prisma-generate:
+	@yarn prisma-generate

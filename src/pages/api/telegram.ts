@@ -4,7 +4,18 @@ import startup from '../../server/startup';
 import eventEmitter from "../../server/events";
 import parentLogger from '../../server/logger';
 import {EventNames, BotMessage} from '../../server/types';
+import { saveStats} from "../../server/statsService";
 const logger = parentLogger.child({file: 'telegramWebhook'});
+
+const createBotResponsePromise = (telegramUpdate: any) => {
+  return new Promise((resolve) => {
+    eventEmitter.on(EventNames.MessageSentToUser, (botMessage:BotMessage) => {
+      if (telegramUpdate.update_id === botMessage.userMessage?.raw.update_id) {
+        resolve(null);
+      }
+    })
+  })
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -15,15 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     logger.debug(`Msg received: ${json}`);
 
     // not the best solution, but vercel need to wait for response
-    const botResponse = new Promise((resolve) => {
-      eventEmitter.on(EventNames.MessageSentToUser, (botMessage:BotMessage) => {
-        if (telegramUpdate.update_id === botMessage.userMessage?.raw.update_id) {
-          resolve(null);
-        }
-      })
-    })
+    const botResponse = createBotResponsePromise(telegramUpdate);
     
     await bot.handleUpdate(telegramUpdate);
+    await saveStats(telegramUpdate);
     logger.debug("Waiting bot response");
     await botResponse;
     logger.debug("Request completed");

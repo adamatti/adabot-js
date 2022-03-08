@@ -1,0 +1,18 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model MessageStats {
+  id        Int      @id @default(autoincrement()) @map("ID")
+  userId    Int      @map("USER_ID")
+  createdAt DateTime @default(now()) @map("CREATED_AT")
+  
+  // FIXME add other field here. e.g. lang
+
+  @@map("MESSAGE_STATS")
+}
